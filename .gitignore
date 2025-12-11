@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# ML/AI Specific
+# Models and checkpoints (large files)
+models/
+output/
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.safetensors
+checkpoint-*/
+best_checkpoint/
+
+# Dataset files (typically too large for git)
+dataset/
+data/
+*.csv
+*.json.gz
+*.parquet
+*.feather
+
+# wandb artifacts
+wandb/
+*.wandb
+
+# Logs
+logs/
+*.log
+tensorboard/
+lightning_logs/
+
+# Test outputs
+test_output/
+*.tmp
+
+# Gradio cache
+.gradio/
+
+# Misc
+.cache/
+*.lock
+*.pid
+
+# Config files with sensitive data
+config.yaml
+.env
+
+# Results and experiments
+summarization_results*
+summarization_data/
+summarization_data.zip
+hallucination_detection_data.zip
+performance_results/
+prompt_tuning/
+
+# GPT-4 data
+gpt-4/hallucination_detection_data/
+gpt-4/summarization_data/
+
+# Specific to this project
+revised_examples/
+data/hallucination_evaluation/
+data/qualitative_evaluation/
+publish_instructions.md
+
+# Keep important configs but track them
+!config.yml
+!requirements.txt
+!README.md
+!LICENSE

@@ -1,0 +1,189 @@
+# BHC Medical Summarization Fine-tuning Configuration
+# Updated: 2025-11-25
+
+# ========================================
+# Model Configuration
+# ========================================
+model:
+  name_or_path: Qwen/Qwen3-1.7B 
+  # Qwen/Qwen3-4B-Instruct-2507 
+  # "Qwen/Qwen2.5-3B-Instruct"
+  # Alternative models (uncomment to use):
+  # name_or_path: "Qwen/Qwen2.5-7B-Instruct"
+  # name_or_path: "meta-llama/Llama-2-7b-hf"
+  # name_or_path: "allenai/led-large-16384"
+  
+  # Quantization settings
+  load_in_8bit: true
+  load_in_4bit: false
+  trust_remote_code: true
+  device_map: "auto"  # or "cuda:0" for specific GPU
+
+# ========================================
+# LoRA Configuration
+# ========================================
+lora:
+  rank: 16
+  alpha: 16
+  dropout: 0.1
+  num_target_modules: 4  # 1: ['q_proj'], 2: ['q_proj', 'v_proj'], 4: ['q_proj', 'k_proj', 'v_proj', 'o_proj']
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# ========================================
+# Training Configuration
+# ========================================
+training:
+  # Output directory
+  output_dir: "output/qwen_finetune"
+  
+  # Training epochs
+  num_train_epochs: 30  # Early stopping will prevent unnecessary epochs
+  logging_steps: 50
+  
+  # Batch settings
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 16
+  
+  # Optimization
+  learning_rate: 1e-4  # Reduced from 5e-4 for more stable convergence
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.15  # Increased from 0.1 for gradual learning start
+  max_grad_norm: 0.3
+  optim: "paged_adamw_32bit"
+  
+  # Evaluation and save strategy (per steps)
+  evaluation_strategy: "steps"
+  eval_steps: 50  # Reduced overhead from frequent evaluation
+  save_strategy: "steps"
+  save_steps: 50  # Reduced overhead from frequent saving
+  save_total_limit: 3  # Keep last 3 checkpoints + best
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false
+  
+  # Misc
+  group_by_length: true
+  ddp_find_unused_parameters: false
+  fp16: false
+  bf16: false
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 3        # Stop after 3 evaluations without improvement
+    threshold: 0.001   # Minimum change to qualify as improvement
+
+# ========================================
+# Data Configuration
+# ========================================
+data:
+  # Base data path
+  base_path: "dataset/mimic-iv-note-ext-di-bhc/dataset"
+  
+  # Training data
+  train_file: "train_4000_600_chars.json"  # Using full dataset for better training
+  # Alternative: "train_4000_600_chars_251-350_pt.json" (100 samples only)
+  
+  # Validation data
+  validation_file: "valid_4000_600_chars.json"
+  # Alternative: "valid.json"
+  
+  # Test data
+  test_file: "test_4000_600_chars_last_100.json"
+  # Alternative: "test.json"
+  
+  # Data limits (null = use all)
+  num_train_examples: null
+  num_val_examples: null
+  num_test_examples: null
+  
+  # Tokenization
+  max_source_length: 4096
+  max_target_length: 350
+
+# ========================================
+# Prompt Configuration
+# ========================================
+prompt:
+  # Instruction text
+  instruction: "Summarize for the patient what happened during the hospital stay based on this doctor's note:"
+  
+  # Response prefix
+  response_prefix: "Summary for the patient:"
+  
+  # Alternative prompts (uncomment to use):
+  # instruction: "Summarize this clinical note for the patient in simple English. Only use the information provided in the clinical note itself and general medical knowledge or advice.\n\nClinical note:"
+  # response_prefix: "Patient summary:"
+
+# ========================================
+# Logging & Monitoring
+# ========================================
+logging:
+  # Wandb settings
+  use_wandb: true
+  wandb_project: "mimic-iv-note-di-bhc"
+  wandb_entity: null  # Set to your wandb entity/username
+  
+  # Console logging
+  use_rich: true
+  log_level: "info"
+  
+  # Output files
+  save_predictions: true
+  save_metrics: true
+
+# ========================================
+# Evaluation Configuration
+# ========================================
+evaluation:
+  # Metrics to compute
+  compute_rouge: true
+  compute_bertscore: true
+  compute_sari: true
+  
+  # BERTScore model
+  bertscore_model: "microsoft/deberta-large-mnli"
+  
+  # Number of examples to display
+  num_display_examples: 3
+  
+  # Evaluation mode
+  evaluation_only: false
+  evaluation_model_path: null  # Path to model checkpoint for evaluation
+
+# ========================================
+# Inference Configuration (per-epoch sampling)
+# ========================================
+inference:
+  # Number of samples to generate during training (per epoch)
+  num_eval_samples: 5
+  
+  # Generation settings
+  max_new_tokens: 350
+  do_sample: false  # Greedy decoding for consistency
+  
+  # Log samples to wandb as Table
+  log_samples_to_wandb: true
+
+# ========================================
+# System Configuration
+# ========================================
+system:
+  seed: 42
+  num_workers: 4
+  device: "cuda"
+  mixed_precision: "no"  # "no", "fp16", "bf16"
+  
+# ========================================
+# Quick Test Configuration
+# ========================================
+quick_test:
+  enabled: false
+  num_train_examples: 10
+  num_val_examples: 5
+  num_test_examples: 5
+  num_train_epochs: 2
+  logging_steps: 1
+
