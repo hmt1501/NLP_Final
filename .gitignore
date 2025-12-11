@@ -73,7 +73,6 @@ test_output/
 *.pid
 
 # Config files with sensitive data
-config.yaml
 .env
 
 # Results and experiments
