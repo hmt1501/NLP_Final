@@ -5,8 +5,8 @@
 set -e
 
 # Activate conda environment
-eval "$(conda shell.bash hook)"
-conda activate all
+# eval "$(conda shell.bash hook)"
+# conda activate all
 
 # Parse arguments
 QUICK_TEST=""

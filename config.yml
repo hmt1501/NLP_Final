@@ -38,12 +38,12 @@ training:
   output_dir: "output/qwen_finetune"
   
   # Training epochs
-  num_train_epochs: 30  # Early stopping will prevent unnecessary epochs
-  logging_steps: 50
+  num_train_epochs: 10  # Early stopping will prevent unnecessary epochs
+  logging_steps: 10
   
   # Batch settings
-  per_device_train_batch_size: 4
-  per_device_eval_batch_size: 4
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
   gradient_accumulation_steps: 16
   
   # Optimization
@@ -55,9 +55,9 @@ training:
   
   # Evaluation and save strategy (per steps)
   evaluation_strategy: "steps"
-  eval_steps: 50  # Reduced overhead from frequent evaluation
+  eval_steps: 25  # Reduced overhead from frequent evaluation
   save_strategy: "steps"
-  save_steps: 50  # Reduced overhead from frequent saving
+  save_steps: 25  # Reduced overhead from frequent saving
   save_total_limit: 3  # Keep last 3 checkpoints + best
   load_best_model_at_end: true
   metric_for_best_model: "eval_loss"

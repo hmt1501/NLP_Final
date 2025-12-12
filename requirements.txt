@@ -45,7 +45,7 @@ sacrebleu>=2.4.0
 sacremoses>=0.1.0
 seqeval>=1.2.0
 bert-score>=0.3.13
-nervaluate>=1.1.0
+# nervaluate>=1.1.0
 
 # ==============================================================================
 # NLP Processing
